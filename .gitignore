@@ -2,3 +2,4 @@ pg_data
 .env
 bin
 .vscode
+.DS_Store
