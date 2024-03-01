@@ -1,0 +1,44 @@
+version: '3.9'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    #image: golang:latest
+    container_name: golang_container
+    env_file:
+      - docker.env
+    tty: true
+    ports:
+      - "${EXPOSE_PORT}:${WEB_PORT}"
+    restart: on-failure
+    entrypoint: /bin/bash
+    command: -c "/app/scripts/start.sh"
+    volumes:
+      - .:/app
+    depends_on:
+      - postgresdb
+    networks:
+      - nevohackathon
+
+  postgresdb:
+    image: postgres:latest
+    container_name: postgres_container
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - DATABASE_HOST=${DB_HOST}
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./pg_data:/var/lib/postgresql/data
+    networks:
+      - nevohackathon
+
+# Networks to be created to facilitate communication between containers
+networks:
+  nevohackathon:
+    driver: bridge

@@ -1,0 +1,20 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    queries: "query.sql"
+    schema: "../../migrations"
+    gen:
+      go:
+        package: "storage"
+        out: "storage"
+        sql_package: "lib/pq"
+        overrides: [
+          {
+            "column": "items.activity_type",
+            "go_type": {
+              "import": "github.com/litvivan/ilyway/app/models",
+              "package": "domain",
+              "type": "ActivityType"
+            }
+          }
+        ]
