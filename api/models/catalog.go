@@ -6,6 +6,10 @@ import (
 	domainModels "github.com/litvivan/ilyway/app/models"
 )
 
+type ListItemRequest struct {
+	Filter map[string]interface{} `json:"filter"`
+}
+
 type Item struct {
 	ID               int64   `json:"id"`
 	Title            string  `json:"title"`

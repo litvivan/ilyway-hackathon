@@ -7,6 +7,7 @@ package storage
 
 import (
 	"context"
+	"database/sql"
 	"time"
 
 	domain "github.com/litvivan/ilyway/app/models"
@@ -99,11 +100,37 @@ func (q *Queries) InsertItem(ctx context.Context, arg InsertItemParams) (Item, e
 
 const listItems = `-- name: ListItems :many
 SELECT id, title, description, participant_count, activity_type, city, author_name, author_rating, image_url, full_address, has_reward, duration, start_at, created_at, updated_at FROM items
+WHERE
+    participant_count >= coalesce($1::int, participant_count) AND
+    participant_count <= coalesce($2::int, participant_count) AND
+    activity_type = coalesce($3::text, activity_type) AND
+    author_rating >= coalesce($4::float, author_rating) AND
+    city = coalesce($5::text, city) AND
+    start_at >= coalesce($6::timestamp, start_at) AND
+    start_at <= coalesce($7::timestamp, start_at)
 ORDER BY id
 `
 
-func (q *Queries) ListItems(ctx context.Context) ([]Item, error) {
-	rows, err := q.db.QueryContext(ctx, listItems)
+type ListItemsParams struct {
+	MinParticipantCount sql.NullInt32
+	MaxParticipantCount sql.NullInt32
+	ActivityType        sql.NullString
+	MinAuthorRating     sql.NullFloat64
+	City                sql.NullString
+	MinStartAt          sql.NullTime
+	MaxStartAt          sql.NullTime
+}
+
+func (q *Queries) ListItems(ctx context.Context, arg ListItemsParams) ([]Item, error) {
+	rows, err := q.db.QueryContext(ctx, listItems,
+		arg.MinParticipantCount,
+		arg.MaxParticipantCount,
+		arg.ActivityType,
+		arg.MinAuthorRating,
+		arg.City,
+		arg.MinStartAt,
+		arg.MaxStartAt,
+	)
 	if err != nil {
 		return nil, err
 	}

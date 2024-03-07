@@ -6,10 +6,11 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/brianvoe/gofakeit/v7"
+
 	"github.com/litvivan/ilyway/app/models"
 	itemRepository "github.com/litvivan/ilyway/app/repo/item"
-
-	"github.com/brianvoe/gofakeit/v7"
+	"github.com/litvivan/ilyway/pkg/repofilter"
 )
 
 type Service struct {
@@ -26,8 +27,8 @@ func (s *Service) GetItem(ctx context.Context, id int) (*models.Item, error) {
 	return s.itemRepo.Get(ctx, id)
 }
 
-func (s *Service) ListItems(ctx context.Context) ([]*models.Item, error) {
-	return s.itemRepo.List(ctx)
+func (s *Service) ListItems(ctx context.Context, filter repofilter.Filter) ([]*models.Item, error) {
+	return s.itemRepo.List(ctx, filter)
 }
 
 func (s *Service) SeedItems(ctx context.Context, count int) ([]*models.Item, error) {
