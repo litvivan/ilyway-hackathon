@@ -4,7 +4,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    #image: golang:latest
     container_name: golang_container
     env_file:
       - docker.env
@@ -38,7 +37,6 @@ services:
     networks:
       - nevohackathon
 
-# Networks to be created to facilitate communication between containers
 networks:
   nevohackathon:
     driver: bridge

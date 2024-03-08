@@ -85,6 +85,10 @@ func (r *Repo) List(ctx context.Context, filter repofilter.Filter) ([]*models.It
 		filterParams.MinAuthorRating = sql.NullFloat64{Float64: *listFilter.MinAuthorRating, Valid: true}
 	}
 
+	if listFilter.City != nil {
+		filterParams.City = sql.NullString{String: *listFilter.City, Valid: true}
+	}
+
 	if !listFilter.MinStartAt.IsZero() {
 		filterParams.MinStartAt = sql.NullTime{Time: listFilter.MinStartAt.UTC(), Valid: true}
 	}

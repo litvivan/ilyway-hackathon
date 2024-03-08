@@ -28,7 +28,7 @@ func NewContainer(
 	logger *log.Logger,
 	now func() time.Time,
 ) (*Container, error) {
-	db, err := sql.Open("postgres", config.GetDBConnectionString())
+	db, err := sql.Open("postgres", config.DBConnectionString())
 	if err != nil {
 		panic(err)
 	}
